@@ -521,7 +521,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = 683ZG3PQ3D;
+				DEVELOPMENT_TEAM = 2H4S89663Q;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = app/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "달카페이";
@@ -555,7 +555,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = 683ZG3PQ3D;
+				DEVELOPMENT_TEAM = 2H4S89663Q;
 				INFOPLIST_FILE = app/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "달카페이";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
