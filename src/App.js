@@ -42,13 +42,13 @@ const App = () => {
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: backgroundColor ?? "#fff" }}>
-        {Platform.OS === 'ios' ?
+        {/* {Platform.OS === 'ios' ?
           <>
             <StatusBar barStyle={statusBarStyle} backgroundColor={backgroundColor ?? "#fff"} />
           </>
           :
           <>
-          </>}
+          </>} */}
         <View style={{ ...styles.container, paddingTop: StatusBarHeight, backgroundColor: backgroundColor ?? "#fff" }}>
           <WebviewComponent
             func={{
