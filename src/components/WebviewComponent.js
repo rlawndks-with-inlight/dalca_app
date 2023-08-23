@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 //import { WebView } from 'react-native-webview';
-import { BackHandler, Platform, ToastAndroid } from 'react-native';
+import { BackHandler, Platform, ToastAndroid, Linking } from 'react-native';
 import { login, logout, getProfile as getKakaoProfile, unlink } from '@react-native-seoul/kakao-login';
 import { SHARED_PREFERENCE, deleteSharedPreference, getSharedPreference, setSharedPreference } from '../shared-preference';
 import { WebView } from 'react-native-webview';
@@ -9,6 +9,8 @@ import { appleAuth, AppleButton } from '@invertase/react-native-apple-authentica
 import GetLocation from 'react-native-get-location';
 
 const WEBVIEW_URL = `https://dalcapay.com`;
+//const WEBVIEW_URL = `http://172.30.1.50:3000`;
+
 const ON_END_URL_LIST = [
     `${WEBVIEW_URL}/app/`,
     `${WEBVIEW_URL}/app/login/`,
@@ -116,37 +118,84 @@ const WebviewComponent = (props) => {
                 JSON.stringify({ method: method, data: location }),
                 '*'
             )
+        } else if (method == 'pass_auth') {
+            let { token_version_id, enc_data, integrity_value } = data;
+            let link = `https://nice.checkplus.co.kr/CheckPlusSafeModel/service.cb?`;
+            link += `m=service&`;
+            link += `token_version_id=${token_version_id}&`;
+            link += `enc_data=${enc_data}&`;
+            link += `integrity_value=${integrity_value}`;
+            console.log(link);
+            let result = await onIntentShow(link);
         }
     }
+    const onIntentShow = async (link, data) => {
+        if (Platform.OS === 'android') {
+            if (link.includes('intent')) {
+                var SendIntentAndroid = require("react-native-send-intent");
+
+                SendIntentAndroid.openAppWithUri(link)
+                    .then((isOpened) => {
+                        console.log(isOpened)
+                        if (!isOpened) { alert('앱 실행에 실패했습니다. 설치가 되어있지 않은 경우 설치하기 버튼을 눌러주세요.'); }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+
+
+            }
+        } else {
+            const supported = await Linking.canOpenURL(link);
+            if (supported) {
+                let result = await Linking.openURL(link);
+                console.log(123)
+                console.log(result)
+                console.log(123)
+
+            } else {
+                alert('앱 실행에 실패했습니다. 설치가 되어있지 않은 경우 설치하기 버튼을 눌러주세요.');
+            }
+        }
+    }
+  
     const handleWebViewNavigationStateChange = (navState) => {
         setCurrentURL(navState.url);
         setCanGoBack(navState.canGoBack);
     };
     const handleWebViewError = (error) => {
+        console.log(123)
         console.error(error); // WebView에서 에러 발생 시 에러 로그 출력
+        console.log(123)
     };
     useEffect(() => {
         console.log(webViewRef.current)
     }, [webViewRef.current])
     return (
-        <WebView
-            ref={webViewRef}
-            source={{ uri: `${WEBVIEW_URL}` }}
-            style={{ flex: 1 }}
-            javaScriptEnabled={true}
-            onMessage={onMessage}
-            onNavigationStateChange={handleWebViewNavigationStateChange}
-            onLoad={() => {
-                setVisible(false);
-            }}
-            onError={handleWebViewError}
-            androidHardwareAccelerationEnabled={true}
-            cacheEnabled={true}
-            decelerationRate="normal"
-            sharedCookiesEnabled={true}
-            renderingMode="hybrid"
-            useWebkit={true}
-        />
+        <>
+            <WebView
+                ref={webViewRef}
+                source={{ uri: `${WEBVIEW_URL}` }}
+                style={{ flex: 1 }}
+                javaScriptEnabled={true}
+                onMessage={onMessage}
+                onNavigationStateChange={handleWebViewNavigationStateChange}
+                onLoad={() => {
+                    setVisible(false);
+                }}
+                onError={handleWebViewError}
+                androidHardwareAccelerationEnabled={true}
+                cacheEnabled={true}
+                decelerationRate="normal"
+                sharedCookiesEnabled={true}
+                renderingMode="hybrid"
+                useWebkit={true}
+                domStorageEnabled={true}
+                mixedContentMode={"compatibility"}
+                thirdPartyCookiesEnabled={true}
+                originWhitelist={["*"]}
+            />
+        </>
     )
 }
 export default WebviewComponent
